@@ -118,4 +118,3 @@ npx prisma db push
 - [ ] `DATABASE_URL` configurada en Vercel
 - [ ] Atlas permite conexiones desde internet (firewall)
 - [ ] `npx prisma db push` ejecutado contra la BD de producción al menos una vez
-# cafe

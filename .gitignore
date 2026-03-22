@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Env (nunca subir secretos)
+.env
+.env*.local
+
+# Vercel
+.vercel
+
+# Debug / OS
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.pem
+
+# TypeScript
+*.tsbuildinfo
+
+# Prisma (opcional: no commitear DB local si usas SQLite en dev)
+# prisma/*.db
+# prisma/*.db-journal
