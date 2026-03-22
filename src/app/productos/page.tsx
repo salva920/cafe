@@ -8,6 +8,7 @@ import {
   Heading,
   Button,
   Table,
+  TableContainer,
   Thead,
   Tbody,
   Tr,
@@ -25,6 +26,7 @@ import {
   Select,
   useDisclosure,
   VStack,
+  HStack,
   Spinner,
   Center,
   Text,
@@ -142,13 +144,13 @@ export default function ProductosPage() {
   return (
     <>
       <LayoutNav />
-      <Container maxW="container.xl" py={6}>
+      <Container maxW="container.xl" py={6} px={{ base: 4, md: 6 }}>
         <VStack align="stretch" spacing={6}>
           <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={3}>
             <Heading size="lg" color="brand.800">
               Productos
             </Heading>
-            <Button leftIcon={<FiPlus />} colorScheme="brand" onClick={handleOpenNew}>
+            <Button leftIcon={<FiPlus />} colorScheme="brand" onClick={handleOpenNew} w={{ base: 'full', sm: 'auto' }}>
               Agregar producto
             </Button>
           </Box>
@@ -159,57 +161,99 @@ export default function ProductosPage() {
                 <Text>No hay productos. Agrega el primero para empezar a vender.</Text>
               </Box>
             ) : (
-              <Table size="sm">
-                <Thead bg="brand.50">
-                  <Tr>
-                    <Th>Nombre</Th>
-                    <Th>Categoría</Th>
-                    <Th isNumeric>Precio</Th>
-                    <Th isNumeric>Stock</Th>
-                    <Th w="100px" />
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {products.map(
-                    (p: { id: string; name: string; category: string; price: number; stock: number }) => (
-                      <Tr key={p.id}>
-                        <Td fontWeight="500">{p.name}</Td>
-                        <Td>{CATEGORIAS.find((c) => c.value === p.category)?.label ?? p.category}</Td>
-                        <Td isNumeric fontWeight="600" color="brand.600">
+              <>
+                <VStack display={{ base: 'flex', md: 'none' }} align="stretch" spacing={3} p={4}>
+                  {products.map((p: { id: string; name: string; category: string; price: number; stock: number }) => (
+                    <Box key={p.id} p={4} bg="brand.50" borderRadius="xl" borderWidth="1px" borderColor="blackAlpha.100">
+                      <Text fontWeight="700" color="brand.800" fontSize="md">
+                        {p.name}
+                      </Text>
+                      <Text fontSize="sm" color="gray.600" mt={1}>
+                        {CATEGORIAS.find((c) => c.value === p.category)?.label ?? p.category}
+                      </Text>
+                      <HStack justify="space-between" mt={3} flexWrap="wrap" gap={2}>
+                        <Text fontWeight="600" color="brand.600">
                           {formatCurrency(p.price)}
-                        </Td>
-                        <Td isNumeric>{p.stock}</Td>
-                        <Td>
+                        </Text>
+                        <Text fontSize="sm">
+                          Stock: <strong>{p.stock}</strong>
+                        </Text>
+                        <HStack>
                           <IconButton
                             aria-label="Editar"
                             icon={<FiEdit2 />}
                             size="sm"
-                            variant="ghost"
-                            mr={1}
+                            variant="solid"
+                            colorScheme="brand"
                             onClick={() => handleOpenEdit(p)}
                           />
                           <IconButton
                             aria-label="Eliminar"
                             icon={<FiTrash2 />}
                             size="sm"
-                            variant="ghost"
+                            variant="solid"
                             colorScheme="red"
                             onClick={() => deleteMutation.mutate(p.id)}
                           />
-                        </Td>
+                        </HStack>
+                      </HStack>
+                    </Box>
+                  ))}
+                </VStack>
+                <TableContainer display={{ base: 'none', md: 'block' }} overflowX="auto">
+                  <Table size="sm" minW="640px">
+                    <Thead bg="brand.50">
+                      <Tr>
+                        <Th>Nombre</Th>
+                        <Th>Categoría</Th>
+                        <Th isNumeric>Precio</Th>
+                        <Th isNumeric>Stock</Th>
+                        <Th w="100px" />
                       </Tr>
-                    )
-                  )}
-                </Tbody>
-              </Table>
+                    </Thead>
+                    <Tbody>
+                      {products.map(
+                        (p: { id: string; name: string; category: string; price: number; stock: number }) => (
+                          <Tr key={p.id}>
+                            <Td fontWeight="500">{p.name}</Td>
+                            <Td>{CATEGORIAS.find((c) => c.value === p.category)?.label ?? p.category}</Td>
+                            <Td isNumeric fontWeight="600" color="brand.600">
+                              {formatCurrency(p.price)}
+                            </Td>
+                            <Td isNumeric>{p.stock}</Td>
+                            <Td>
+                              <IconButton
+                                aria-label="Editar"
+                                icon={<FiEdit2 />}
+                                size="sm"
+                                variant="ghost"
+                                mr={1}
+                                onClick={() => handleOpenEdit(p)}
+                              />
+                              <IconButton
+                                aria-label="Eliminar"
+                                icon={<FiTrash2 />}
+                                size="sm"
+                                variant="ghost"
+                                colorScheme="red"
+                                onClick={() => deleteMutation.mutate(p.id)}
+                              />
+                            </Td>
+                          </Tr>
+                        )
+                      )}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </>
             )}
           </Box>
         </VStack>
       </Container>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: 'md' }}>
         <ModalOverlay />
-        <ModalContent borderRadius="2xl">
+        <ModalContent borderRadius={{ base: 0, md: '2xl' }} m={{ base: 0, md: undefined }}>
           <ModalHeader>{editingId ? 'Editar producto' : 'Nuevo producto'}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>

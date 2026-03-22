@@ -25,31 +25,33 @@ export function LayoutNav() {
       borderColor="blackAlpha.100"
       boxShadow="0 1px 0 rgba(61, 41, 20, 0.06)"
     >
-      <Container maxW="container.xl" py={3}>
-        <HStack spacing={{ base: 3, md: 6 }} flexWrap="wrap" justify={{ base: 'center', md: 'flex-start' }}>
+      <Container maxW="container.xl" py={3} px={{ base: 3, md: 4 }}>
+        <HStack spacing={3} align="center" flexWrap={{ base: 'nowrap', md: 'wrap' }} overflowX={{ base: 'auto', md: 'visible' }} pb={{ base: 1, md: 0 }} sx={{ WebkitOverflowScrolling: 'touch' }}>
           <Text
             fontFamily="heading"
             fontWeight="800"
-            fontSize={{ base: 'md', md: 'lg' }}
+            fontSize={{ base: 'sm', sm: 'md', md: 'lg' }}
             color="brand.700"
             letterSpacing="-0.02em"
-            mr={{ md: 2 }}
+            flexShrink={0}
+            mr={{ base: 1, md: 2 }}
           >
             Café Montilla
           </Text>
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
             return (
-              <Link key={href} href={href}>
+              <Link key={href} href={href} title={label} aria-label={label}>
                 <HStack
-                  spacing={2}
-                  px={3}
+                  spacing={1.5}
+                  px={{ base: 2.5, md: 3 }}
                   py={2}
                   borderRadius="xl"
                   bg={isActive ? 'brand.100' : 'transparent'}
                   color={isActive ? 'brand.800' : 'gray.600'}
                   fontWeight={isActive ? '700' : '500'}
                   fontSize="sm"
+                  flexShrink={0}
                   transition="all 0.2s ease"
                   _hover={{
                     bg: isActive ? 'brand.100' : 'brand.50',
@@ -57,7 +59,7 @@ export function LayoutNav() {
                   }}
                 >
                   <Icon size={18} />
-                  <Text display={{ base: 'none', sm: 'block' }}>{label}</Text>
+                  <Text display={{ base: 'none', md: 'block' }}>{label}</Text>
                 </HStack>
               </Link>
             )

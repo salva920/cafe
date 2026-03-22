@@ -11,6 +11,7 @@ import {
   StatNumber,
   Text,
   Table,
+  TableContainer,
   Thead,
   Tbody,
   Tr,
@@ -65,7 +66,7 @@ export default function HomePage() {
   return (
     <>
       <LayoutNav />
-      <Container maxW="container.xl" py={6}>
+      <Container maxW="container.xl" py={6} px={{ base: 4, md: 6 }}>
         <VStack align="stretch" spacing={6}>
           <Heading size="lg" color="brand.800" display="flex" alignItems="center" gap={2}>
             <FiCoffee />
@@ -97,28 +98,47 @@ export default function HomePage() {
             {recentSales.length === 0 ? (
               <Text color="gray.500">No hay ventas. Ve a Ventas para registrar una.</Text>
             ) : (
-              <Table size="sm">
-                <Thead>
-                  <Tr>
-                    <Th>Cliente</Th>
-                    <Th isNumeric>Total</Th>
-                    <Th>Fecha</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
+              <>
+                <VStack display={{ base: 'flex', md: 'none' }} align="stretch" spacing={3}>
                   {recentSales.map((sale: { id: string; clientName?: string; total: number; createdAt: string }) => (
-                    <Tr key={sale.id}>
-                      <Td>{sale.clientName || '—'}</Td>
-                      <Td isNumeric fontWeight="600" color="brand.600">
+                    <Box key={sale.id} p={3} bg="brand.50" borderRadius="xl" borderWidth="1px" borderColor="blackAlpha.100">
+                      <Text fontWeight="600" color="brand.800">
+                        {sale.clientName || '—'}
+                      </Text>
+                      <Text fontSize="lg" fontWeight="700" color="brand.600">
                         {formatCurrency(sale.total)}
-                      </Td>
-                      <Td fontSize="sm" color="gray.600">
+                      </Text>
+                      <Text fontSize="xs" color="gray.600">
                         {formatDateShort(sale.createdAt)}
-                      </Td>
-                    </Tr>
+                      </Text>
+                    </Box>
                   ))}
-                </Tbody>
-              </Table>
+                </VStack>
+                <TableContainer display={{ base: 'none', md: 'block' }} overflowX="auto">
+                  <Table size="sm" variant="simple">
+                    <Thead>
+                      <Tr>
+                        <Th>Cliente</Th>
+                        <Th isNumeric>Total</Th>
+                        <Th>Fecha</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {recentSales.map((sale: { id: string; clientName?: string; total: number; createdAt: string }) => (
+                        <Tr key={sale.id}>
+                          <Td>{sale.clientName || '—'}</Td>
+                          <Td isNumeric fontWeight="600" color="brand.600">
+                            {formatCurrency(sale.total)}
+                          </Td>
+                          <Td fontSize="sm" color="gray.600">
+                            {formatDateShort(sale.createdAt)}
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </>
             )}
           </Box>
 

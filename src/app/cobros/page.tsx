@@ -8,6 +8,7 @@ import {
   Heading,
   Button,
   Table,
+  TableContainer,
   Thead,
   Tbody,
   Tr,
@@ -120,13 +121,18 @@ export default function CobrosPage() {
   return (
     <>
       <LayoutNav />
-      <Container maxW="container.xl" py={6}>
+      <Container maxW="container.xl" py={6} px={{ base: 4, md: 6 }}>
         <VStack align="stretch" spacing={6}>
-          <HStack justify="space-between" flexWrap="wrap" gap={3}>
+          <HStack justify="space-between" flexWrap="wrap" gap={3} align="flex-start">
             <Heading size="lg" color="brand.800">
               Cuentas por cobrar
             </Heading>
-            <Button size="sm" variant={showAll ? 'solid' : 'outline'} onClick={() => setShowAll(!showAll)}>
+            <Button
+              size="sm"
+              variant={showAll ? 'solid' : 'outline'}
+              onClick={() => setShowAll(!showAll)}
+              w={{ base: 'full', sm: 'auto' }}
+            >
               {showAll ? 'Solo con deuda' : 'Ver todos los clientes'}
             </Button>
           </HStack>
@@ -135,62 +141,105 @@ export default function CobrosPage() {
             Abonos o pago total. Las ventas a crédito suman la deuda automáticamente.
           </Text>
 
-          <Box bg="white" p={5} borderRadius="2xl" shadow="montilla" borderWidth="1px" borderColor="blackAlpha.100" overflowX="auto">
+          <Box bg="white" p={{ base: 4, md: 5 }} borderRadius="2xl" shadow="montilla" borderWidth="1px" borderColor="blackAlpha.100">
             {customers.length === 0 ? (
               <Text color="gray.500">No hay clientes con deuda pendiente.</Text>
             ) : (
-              <Table size="sm">
-                <Thead>
-                  <Tr>
-                    <Th>Cliente</Th>
-                    <Th isNumeric>Deuda</Th>
-                    <Th>Acciones</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
+              <>
+                <VStack display={{ base: 'flex', md: 'none' }} align="stretch" spacing={3}>
                   {customers.map((c: { id: string; name: string; balance: number }) => (
-                    <Tr key={c.id}>
-                      <Td fontWeight="500">{c.name}</Td>
-                      <Td isNumeric>
-                        <Text fontWeight="700" color={c.balance > 0 ? 'orange.600' : 'green.600'}>
-                          {formatCurrency(c.balance)}
-                        </Text>
-                      </Td>
-                      <Td>
-                        <HStack spacing={2} flexWrap="wrap">
-                          <Button
-                            size="sm"
-                            colorScheme="brand"
-                            variant="outline"
-                            isDisabled={c.balance <= 0}
-                            onClick={() => abrirAbono({ id: c.id, name: c.name, balance: c.balance })}
-                          >
-                            Abonar
-                          </Button>
-                          <Button
-                            size="sm"
-                            colorScheme="green"
-                            isDisabled={c.balance <= 0}
-                            onClick={() => liquidarTodo({ id: c.id, name: c.name, balance: c.balance })}
-                            isLoading={payMutation.isPending}
-                          >
-                            Pagar todo
-                          </Button>
-                          {c.balance <= 0 && <Badge colorScheme="green">Al día</Badge>}
-                        </HStack>
-                      </Td>
-                    </Tr>
+                    <Box key={c.id} p={4} bg="brand.50" borderRadius="xl" borderWidth="1px" borderColor="blackAlpha.100">
+                      <Text fontWeight="700" color="brand.800" fontSize="md">
+                        {c.name}
+                      </Text>
+                      <Text fontWeight="800" color={c.balance > 0 ? 'orange.600' : 'green.600'} fontSize="xl" mt={2}>
+                        {formatCurrency(c.balance)}
+                      </Text>
+                      {c.balance <= 0 && (
+                        <Badge colorScheme="green" mt={2}>
+                          Al día
+                        </Badge>
+                      )}
+                      <VStack mt={4} spacing={2} align="stretch" w="full">
+                        <Button
+                          size="sm"
+                          colorScheme="brand"
+                          variant="solid"
+                          isDisabled={c.balance <= 0}
+                          onClick={() => abrirAbono({ id: c.id, name: c.name, balance: c.balance })}
+                          w="full"
+                        >
+                          Abonar
+                        </Button>
+                        <Button
+                          size="sm"
+                          colorScheme="green"
+                          isDisabled={c.balance <= 0}
+                          onClick={() => liquidarTodo({ id: c.id, name: c.name, balance: c.balance })}
+                          isLoading={payMutation.isPending}
+                          w="full"
+                        >
+                          Pagar todo
+                        </Button>
+                      </VStack>
+                    </Box>
                   ))}
-                </Tbody>
-              </Table>
+                </VStack>
+                <TableContainer display={{ base: 'none', md: 'block' }} overflowX="auto">
+                  <Table size="sm" minW="560px">
+                    <Thead>
+                      <Tr>
+                        <Th>Cliente</Th>
+                        <Th isNumeric>Deuda</Th>
+                        <Th>Acciones</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {customers.map((c: { id: string; name: string; balance: number }) => (
+                        <Tr key={c.id}>
+                          <Td fontWeight="500">{c.name}</Td>
+                          <Td isNumeric>
+                            <Text fontWeight="700" color={c.balance > 0 ? 'orange.600' : 'green.600'}>
+                              {formatCurrency(c.balance)}
+                            </Text>
+                          </Td>
+                          <Td>
+                            <HStack spacing={2} flexWrap="wrap">
+                              <Button
+                                size="sm"
+                                colorScheme="brand"
+                                variant="outline"
+                                isDisabled={c.balance <= 0}
+                                onClick={() => abrirAbono({ id: c.id, name: c.name, balance: c.balance })}
+                              >
+                                Abonar
+                              </Button>
+                              <Button
+                                size="sm"
+                                colorScheme="green"
+                                isDisabled={c.balance <= 0}
+                                onClick={() => liquidarTodo({ id: c.id, name: c.name, balance: c.balance })}
+                                isLoading={payMutation.isPending}
+                              >
+                                Pagar todo
+                              </Button>
+                              {c.balance <= 0 && <Badge colorScheme="green">Al día</Badge>}
+                            </HStack>
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </>
             )}
           </Box>
         </VStack>
       </Container>
 
-      <Modal isOpen={!!abonoCliente} onClose={() => setAbonoCliente(null)}>
+      <Modal isOpen={!!abonoCliente} onClose={() => setAbonoCliente(null)} size={{ base: 'full', md: 'md' }}>
         <ModalOverlay />
-        <ModalContent borderRadius="2xl">
+        <ModalContent borderRadius={{ base: 0, md: '2xl' }} m={{ base: 0, md: undefined }}>
           <ModalHeader>Abono — {abonoCliente?.name}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
